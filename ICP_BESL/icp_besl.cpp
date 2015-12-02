@@ -10,7 +10,7 @@ vector<Vector2f > texModel;
 
 int main(int argc, char* argv[])
 {
-	if (argc != 3)
+	if (argc != 4)
 	{
 		cerr << "Invalid arguments" << endl;
 		exit(EXIT_FAILURE);
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	printObjInfo(vertData, colData, texData, normData);
 	printObjInfo(vertModel, colModel, texModel, normModel);
 
-	float thres = 0.1f;
+	float thres = atof(argv[3]);
 	vector<Vector3f > registredData;
 	ICPLoop(vertData, vertModel, registredData, thres);
 

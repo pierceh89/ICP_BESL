@@ -118,7 +118,8 @@ void ICPLoop(const vector<Vector3f >& data, const vector<Vector3f >& model, vect
 {
 	vector<size_t> idx;
 	vector<Vector3f > curdata(data);
-	float RMSE;
+	float tolerance = 0.01;
+	float prevRMSE = 10e5, RMSE;
 	do{
 		// compute closest point
 		idx.clear();
@@ -157,7 +158,12 @@ void ICPLoop(const vector<Vector3f >& data, const vector<Vector3f >& model, vect
 		// compute RMSE
 		RMSE = computeRMSE(curdata, model, idx);
 		cout << "RMSE: " << RMSE << endl;
-		
-	} while (RMSE > threshold);
+
+		float diff = prevRMSE - RMSE;
+		if (diff < tolerance || RMSE < threshold)
+			break;
+
+		prevRMSE = RMSE;
+	} while (true);
 	registratedData = curdata;
 }
