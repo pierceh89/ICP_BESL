@@ -1,6 +1,7 @@
 #include "basis.h"
 #include "utils.h"
 #include "registration.h"
+#include "timeLapse.h"
 
 // storage
 vector<Vector3f > vertData, colData, normData;
@@ -24,7 +25,8 @@ int main(int argc, char* argv[])
 
 	float thres = atof(argv[3]);
 	vector<Vector3f > registredData;
-	ICPLoop(vertData, vertModel, registredData, thres);
+	//ICPLoop(vertData, vertModel, registredData, thres);
+	cout << "Elapsed Time: " << tim::measure<>::execution(ICPLoop, vertData, vertModel, registredData, thres) << " miliseconds" << endl;
 
 	objWriter("out_data.obj", registredData);
 	

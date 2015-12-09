@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="basis.h" />
     <ClInclude Include="registration.h" />
+    <ClInclude Include="timeLapse.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

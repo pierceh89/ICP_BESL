@@ -1,15 +1,30 @@
 #include "basis.h"
 #include "registration.h"
+#include "timeLapse.h"
 
-void centroid(const vector<Vector3f >& vertices, MatrixXf& ret)
+void centroid(const vector<Vector3f >& vertices, MatrixXf& ret, vector<size_t>* idx)
 {
 	float x(0.0), y(0.0), z(0.0);
-	float invSize = 1.f/static_cast<float>(vertices.size());
-	for (size_t i = 0; i < vertices.size(); i++)
+	float invSize;
+	if (idx == nullptr)
 	{
-		x += vertices[i](0, 0);
-		y += vertices[i](1, 0);
-		z += vertices[i](2, 0);
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			x += vertices[i](0, 0);
+			y += vertices[i](1, 0);
+			z += vertices[i](2, 0);
+		}
+		invSize = 1.f / static_cast<float>(vertices.size());
+	}
+	else
+	{
+		for (size_t i = 0; i < idx->size(); i++)
+		{
+			x += vertices[idx->at(i)](0,0);
+			y += vertices[idx->at(i)](1,0);
+			z += vertices[idx->at(i)](2,0);
+		}
+		invSize = 1.f / static_cast<float>(idx->size());
 	}
 	ret(0, 0) = x*invSize;
 	ret(1, 0) = y*invSize;
@@ -33,7 +48,7 @@ void xcov(const vector<Vector3f >& vd, const MatrixXf& ctd, const vector<Vector3
 		xcovret(1, 2) += vd[i](1) * vm[idx[i]](2) - covct(1,2);
 		xcovret(2, 0) += vd[i](2) * vm[idx[i]](0) - covct(2,0);
 		xcovret(2, 1) += vd[i](2) * vm[idx[i]](1) - covct(2,1);
-		xcovret(2, 2) += vd[i](2) * vm[idx[i]](2) - covct(2,1);
+		xcovret(2, 2) += vd[i](2) * vm[idx[i]](2) - covct(2,2);
 	}
 
 	xcovret = xcovret / static_cast<float>(szData);
@@ -123,12 +138,14 @@ void ICPLoop(const vector<Vector3f >& data, const vector<Vector3f >& model, vect
 	do{
 		// compute closest point
 		idx.clear();
-		naiveCorrespondence(curdata, model, idx);
+		//naiveCorrespondence(curdata, model, idx);
+		cout << "Elapsed Time finding correspondences: "
+			<< tim::measure<>::execution(naiveCorrespondence, curdata, model, idx) << " miliseconds" << endl;
 
 		// compute centroid
 		MatrixXf ctData(3, 1), ctModel(3, 1);
 		centroid(curdata, ctData);
-		centroid(model, ctModel);
+		centroid(model, ctModel, &idx);
 
 		cout << "Centroid of Data: " << endl << ctData << endl;
 		cout << "Centroid of Model: " << endl << ctModel << endl;

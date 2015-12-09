@@ -2,7 +2,7 @@
 #define H_REGISTRATION
 #include "basis.h"
 
-void centroid(const vector<Vector3f >& vertices, MatrixXf& ret);
+void centroid(const vector<Vector3f >& vertices, MatrixXf& ret, vector<size_t>* idx=nullptr);
 void xcov(const vector<Vector3f >& vd, const MatrixXf& ctd, const vector<Vector3f >& vm, const MatrixXf& ctm, const vector<size_t>& idx, Matrix3f& ret);
 void computeQ(const Matrix3f& xcovMat, Matrix4f& ret);
 void computeRT(const Matrix4f& Q, const MatrixXf& ctData, const MatrixXf& ctModel, Matrix3f& retR, MatrixXf& retT);
